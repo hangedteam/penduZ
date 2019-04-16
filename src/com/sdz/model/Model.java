@@ -41,17 +41,10 @@ public class Model implements Observable{
 				this.score.initPoint(this.mot.getNombreErreur());
 				this.score.setNombreMot(this.score.getNombreMot()+1);
 				JOptionPane.showMessageDialog(null,
-						                        "Vous avez trouvé le mot " + this.mot.getWord() +
-						                        " en " +
-						                        this.mot.getNombreCoup() + " coup" + ((this.mot.getNombreCoup() > 1) ? "s" : "") +
-												", avec " + this.mot.getNombreErreur() +
-						                        " erreur" + ((this.mot.getNombreErreur() > 1) ? "s" : "") + ".\n" +
-						                        "\tVous marquez donc " +
-						                        this.score.getPointMarque() + " pts.\n" +
-												"\tVotre avez maintenant un total de " +
-												this.score.getPoint() + " pts.",
-												"Résultat",
-												JOptionPane.INFORMATION_MESSAGE);
+						                        "Vous avez trouvé le mot " + this.mot.getWord() + " en " + this.mot.getNombreCoup() + " coup" + ((this.mot.getNombreCoup() > 1) ? "s" : "") +
+												", avec " + this.mot.getNombreErreur() + " erreur" + ((this.mot.getNombreErreur() > 1) ? "s" : "") + ".\n" +
+						                        "\tVous marquez donc " + this.score.getPointMarque() + " pts.\n" +
+												"\tVotre avez maintenant un total de " +this.score.getPoint() + " pts.","Résultat",JOptionPane.INFORMATION_MESSAGE);
 				this.mot.initWord();
 				this.mot.setNombreErreur(0);
 				this.nombreMot++;
@@ -198,6 +191,7 @@ public class Model implements Observable{
 		for(Observer obs : this.listObserver)
 			obs.accueil();
 	}
+
 	
 	public Score[] getScores(){
 		return this.scoreSerializer.getListeScore();

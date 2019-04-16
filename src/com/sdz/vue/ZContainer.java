@@ -22,7 +22,7 @@ public abstract class ZContainer{
 		
 	}
 	
-	protected JPanel getPanel(){
+	public JPanel getPanel(){
 		return this.panel;
 	}
 	
