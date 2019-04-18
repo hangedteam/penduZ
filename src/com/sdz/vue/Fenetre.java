@@ -67,10 +67,7 @@ public class Fenetre extends JFrame implements Observer{
 	    //newServer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N,InputEvent.CTRL_MASK));
 	   newServer.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
-				conteneur.removeAll();
-				conteneur.add(new ServerPanel(size, model, false, getFenetre()).getPanel(), BorderLayout.CENTER);
-				conteneur.revalidate();
-				//initModel();
+				serverCreation(size,model,false,getFenetre());
 			}	    	
 	    });
 
@@ -79,7 +76,7 @@ public class Fenetre extends JFrame implements Observer{
 	    joinGame.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0){
 				conteneur.removeAll();
-				conteneur.add(new ScorePanel(size, model.getScores()).getPanel(), BorderLayout.CENTER);
+				conteneur.add(new ClientPanel(size, model, getFenetre()).getPanel(), BorderLayout.CENTER);
 				conteneur.revalidate();
 				model.reset();
 			}
@@ -146,6 +143,17 @@ public class Fenetre extends JFrame implements Observer{
 		conteneur.removeAll();
 		conteneur.add(new WaitingPanel(size, model, nbP,this).getPanel(), BorderLayout.CENTER);
 		conteneur.revalidate();
+	}
+	
+	public void serverCreation(Dimension dim, Observable mod, boolean error, Fenetre fen){
+		System.out.println("Creation serveur …");
+		conteneur.removeAll();
+		//conteneur.validate();
+		JPanel pan = new ServerPanel(dim,mod,error,fen).getPanel();
+		pan.setBackground(Color.red);
+		conteneur.add(pan, BorderLayout.CENTER);
+		conteneur.revalidate();
+		this.repaint();
 	}
 
 	public Fenetre getFenetre() {

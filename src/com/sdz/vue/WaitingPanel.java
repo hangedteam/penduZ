@@ -41,6 +41,7 @@ public class WaitingPanel extends ZContainer implements Observer{
 
 	public WaitingPanel(Dimension dim, Observable mod, int playersNeeded, Fenetre fen){
 		super(dim);
+		dimension = dim;
 		this.mod = mod;
 		this.playersNeeded = playersNeeded;
 		this.controler = new Controler(mod);

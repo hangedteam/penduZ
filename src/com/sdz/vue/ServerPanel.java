@@ -10,15 +10,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import com.sdz.controler.Controler;
+import com.sdz.model.ClientHandler;
 import com.sdz.model.Model;
 import com.sdz.model.Score;
 import com.sdz.observer.Observable;
 import com.sdz.observer.Observer;
 
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.util.concurrent.Future;
@@ -32,146 +36,139 @@ public class ServerPanel extends ZContainer implements Observer{
 	private TextField portField;
 	private TextField playerField;
 	private Observable mod;
-	private Controler controler;
+	//private Controler controler;
 	private boolean error = false;
 	private Choice mode;
 	private Fenetre fen;
-	private JPanel leftContent;
+	private JPanel content;
 
 	
 
 	
 	public ServerPanel(Dimension dim, Observable mod, boolean error, Fenetre fen){
 		super(dim);
+		dimension = dim;
 		this.mod = mod;
 		this.error = error;
-		this.controler = new Controler(mod);
+		//this.controler = new Controler(mod);
 		this.fen = fen;
 		initPanel();
 	}
 
 	protected void initPanel(){
-		 leftContent = new JPanel();
-
-		/*		JPanel head = new JPanel();
-		head.setPreferredSize(new Dimension(410, 100));
-		Label serverLabel = new Label("Creation du serveur de jeu");
-		serverLabel.setPreferredSize(new Dimension(300, 20));
-
-		head.add(serverLabel, BorderLayout.NORTH);*/
-
-		//System.out.println("Size : " + this.dimension.getWidth());
-		//Dimension dim = new Dimension((int)(this.dimension.getWidth()/2), (int)this.dimension.getHeight());
-
-		Dimension dim = new Dimension(410, 200);
-
-		JPanel body = new JPanel();
-		body.setPreferredSize(dim);
-		body.setBackground(Color.white);
-
+		//this.panel.removeAll();
+		
+		content = new JPanel();
+		content.setPreferredSize(new Dimension(500,500));
+		content.setBackground(Color.blue);
+		content.setFont(arial);
+		
 		Label playerLabel = new Label("How many players do you want : ");  
 		playerLabel.setBounds(50,100, 100,30);    
-		body.add(playerLabel);
+		content.add(playerLabel);
 
 		playerField = new TextField("2");  
 		playerField.setBounds(50,100, 200,30);   
-		body.add(playerField); 
+		content.add(playerField); 
 
 		Label modeLabel = new Label("What game mode do you want : ");  
 		modeLabel.setBounds(50,100, 100,30);    
-		body.add(modeLabel);
+		content.add(modeLabel);
 
 		mode = new Choice();  
 		mode.setBounds(100,100, 75,75);  
 		mode.add("Mode 1");  
 		mode.add("Mode 2");  
 		mode.add("Mode 3");  
-		body.add(mode);  
-
-		Label portLabel = new Label("What is the port you want to use : ");  
-		portLabel.setBounds(50,100, 100,30);    
-		body.add(portLabel);
-
-		portField = new TextField("1234");  
-		portField.setBounds(50,100, 200,30);   
-		body.add(portField); 
+		content.add(mode);  
 
 		BoutonListener bl = new BoutonListener();
 		this.bouton = new JButton("Create server");
-		/*bouton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent arg0){
-				//Fenetre fenetre = new Fenetre(mod);
-		 		fen.waitForPlayers(5);
-				conteneur.removeAll();
-				//conteneur.removeAll();
-				//conteneur.add(new WaitingPanel(dim, mod, 5).getPanel(), BorderLayout.CENTER);
-				//conteneur.revalidate();
-				//initModel();
-			}	    	
-	    });*/
 		bouton.addActionListener(bl);
-		body.add(bouton);
+		bouton.setAlignmentX(100);
+		content.add(bouton);
 
 		if(error) {
 			System.out.println("error");
-			// afficher erreur
+			JTextArea errors = new JTextArea();
+			errors.setBackground(Color.white);
+			errors.setFont(dialog);
+			errors.setText(	"\n\n\n\n\n\nerreur erreur erreur erreur erreur erreur erreur");
+			errors.setEditable(false);
+			content.add(errors, BorderLayout.SOUTH);
 		}
+			
+		this.panel.add(content);
+		
+		//this.panel.revalidate();
 
-		leftContent.add(body, BorderLayout.CENTER);
-		leftContent.setBackground(Color.white);
-
-		this.panel.add(leftContent);
-
+	}
+	
+	public boolean check() {
+		return false;
 	}
 
 	public class BoutonListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			System.out.println("bouton");
-			int port = 1234, numberPlayer = 2;/////////
-			try{
-				port = Integer.parseInt(portField.getText());
-				numberPlayer = Integer.parseInt(playerField.getText());// check
-			}
-			catch(Exception e1) {
-				JPanel conteneur = new JPanel();
-				conteneur.removeAll();
-				conteneur.add(new ServerPanel(dimension, mod,true,fen).getPanel(), BorderLayout.CENTER);
-				conteneur.revalidate();
-				return;
-			}
-			System.out.println("creation du serveur sur le port :"+port);
-			try (AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open()) {
-				server.bind(new InetSocketAddress("127.0.0.1", port));
-				AsynchronousSocketChannel[] clients = null;
-				for (int i = 0 ; i < numberPlayer ; i++) {
-					System.out.println("boucle for "+i);
-					Future<AsynchronousSocketChannel> acceptCon = server.accept();
-					//Fenetre fenetre = new Fenetre(mod);
-					leftContent.removeAll();
-					fen.waitForPlayers(numberPlayer - i);
-			 		
-			 		//getPanel().removeAll();
-			 		//fen.getConteneur().removeAll();
-					
-					clients[i] = acceptCon.get();
-					if ((clients[i]!= null) && (clients[i].isOpen())) {
-					//if (true) {
-						System.out.println("New Client ");
-						//Fenetre fenetre2 = new Fenetre(mod);
-				 		//fen.waitForPlayers(numberPlayer - i);
-						//fen.getConteneur().removeAll();
-					}
-					//clients[i].close();
-				}
-
-
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			action();
 		}
 	}
 
 
+	public void action() {
+
+//		if(!check()) {
+//			System.out.println("check false");
+//			fen.serverCreation(dimension,mod,true,fen.getFenetre());
+//			return;
+//		}
+		
+		System.out.println("check true");
+		int numberPlayer = 2;
+		try{
+			numberPlayer = Integer.parseInt(playerField.getText());// check
+		}
+		catch(Exception e1) {
+			JPanel conteneur = new JPanel();
+			conteneur.removeAll();
+			conteneur.add(new ServerPanel(dimension, mod,true,fen).getPanel(), BorderLayout.CENTER);
+			conteneur.revalidate();
+			return;
+		}
+		System.out.println("creation du serveur sur le port :"+port);
+		try (AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open()) {
+			server.bind(null);
+			//server.bind(new InetSocketAddress("127.0.0.1",1234));
+			SocketAddress localAD = server.getLocalAddress();
+			int p = ((InetSocketAddress)localAD).getPort();
+			//String ad = ((InetSocketAddress)localAD).getAddress().toString();
+			JOptionPane.showMessageDialog(null, "Vous avez lancé un serveur à l'adresse 127.0.0.1 sur le port "+p, "Serveur ouvert", JOptionPane.INFORMATION_MESSAGE);
+			AsynchronousSocketChannel[] clients = new AsynchronousSocketChannel[numberPlayer];
+			for (int i = 1 ; i <= numberPlayer ; i++) {
+				System.out.println("boucle for "+i);
+				Future<AsynchronousSocketChannel> acceptCon = server.accept();
+				clients[i-1] = acceptCon.get();
+				System.out.println(clients[i-1].getLocalAddress());
+				if ((clients[i-1]!= null) && (clients[i-1].isOpen())) {
+					System.out.println("New Client ");
+					if (i == numberPlayer) {
+						JOptionPane.showMessageDialog(null, "Tous les joueurs sont connectés.", "Lancement de la partie", JOptionPane.INFORMATION_MESSAGE);
+						
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Il y a "+i+"joueurs connectés.", "En attente de joueurs", JOptionPane.INFORMATION_MESSAGE);
+					}
+				}
+				//clients[i-1].close();
+			}
+			ClientHandler clientHandler = new ClientHandler(clients);
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+	}
+	
 	@Override
 	public void update(String mot, int pts, String imgPath, int nbreMot) {
 		// TODO Auto-generated method stub
@@ -192,7 +189,7 @@ public class ServerPanel extends ZContainer implements Observer{
 
 	@Override
 	public void accueil() {
-		// TODO Auto-generated method stub
+		
 
 	}
 

@@ -23,10 +23,7 @@ public class AccueilPanel extends ZContainer{
 		
 		this.panel.add(new JLabel(new ImageIcon("images/accueil.jpg")), BorderLayout.CENTER);
 		
-		JTextArea texte = new JTextArea(	"Vous avez sept coups pour trouver le mot caché. Si vous réussissez, on recommence !\n" +
-											"Plus vous trouvez de mots, plus votre score augmente. Alors, à vous de jouer !\n" +
-											"Proverbe :\t« Pas vu, pas pris !\n" +
-                      						"\tPris ! PENDU ! »");
+		JTextArea texte = new JTextArea("");
 		texte.setFont(arial);
 		texte.setEditable(false);
 		texte.setBackground(Color.white);
