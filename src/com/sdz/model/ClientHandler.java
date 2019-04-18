@@ -11,4 +11,14 @@ public class ClientHandler implements Runnable {
 	ObjectOutputStream out = null;
 	int allowedAttempts = 0;
 
+	ClientHandler(AsynchronousSocketChannel[] cls) {
+		clients = cls;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+
+	}
+
 }
